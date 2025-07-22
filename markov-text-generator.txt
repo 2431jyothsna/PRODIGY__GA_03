@@ -1,0 +1,44 @@
+import random
+import re
+from collections import defaultdict
+
+
+sample_text = """
+Artificial intelligence is the future of technology. 
+It allows machines to learn from data and make decisions like humans. 
+Machine learning is a part of artificial intelligence.
+"""
+
+def clean_text(text):
+    text = re.sub(r'[^\w\s]', '', text)
+    text = text.lower()
+    return text
+
+
+def build_markov_chain(words):
+    markov_chain = defaultdict(list)
+    for i in range(len(words) - 1):
+        markov_chain[words[i]].append(words[i + 1])
+    return markov_chain
+
+
+def generate_text(chain, start_word, length=50):
+    word = start_word
+    result = [word]
+    for _ in range(length):
+        if word not in chain:
+            break
+        word = random.choice(chain[word])
+        result.append(word)
+    return ' '.join(result)
+
+
+cleaned_text = clean_text(sample_text)
+words = cleaned_text.split()
+chain = build_markov_chain(words)
+start = random.choice(words)
+generated = generate_text(chain, start, 50)
+
+
+print("Generated Text:\n")
+print(generated)
